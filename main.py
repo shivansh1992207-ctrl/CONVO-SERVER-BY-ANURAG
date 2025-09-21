@@ -16,7 +16,7 @@ def log(msg):
 # ---------- HTML PANEL ----------
 @app.route('/')
 def index():
-    return open("panel.html").read()  # ye file me HTML likh ke save karo
+    return open("panel.html").read()
 
 # ---------- API ----------
 @app.route('/upload', methods=['POST'])
@@ -111,5 +111,7 @@ def send_messages_from_file():
                 log(f"[!] Error: {e}")
             time.sleep(speed)
 
+# ---------- MAIN ----------
 if __name__ == "__main__":
-    app.run(port=4000, threaded=True)
+    port = int(os.environ.get("PORT", 4000))
+    app.run(host="0.0.0.0", port=port, threaded=True)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ANURAG X AROHI PANEL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#111;color:#fff;text-align:center;padding:20px;}
+.box{background:#1c1c1c;padding:20px;border-radius:12px;max-width:500px;margin:auto;}
+input,button{width:100%;margin-top:12px;padding:10px;border:none;border-radius:8px;font-size:14px;}
+input[type="file"], input[type="text"]{background:#222;color:#fff;}
+button{cursor:pointer;font-weight:bold;}
+.start{background:#ff4da6;color:#fff;}
+.stop{background:#e60073;color:#fff;}
+#logs{margin-top:20px;background:#000;padding:10px;border-radius:8px;max-height:200px;overflow-y:auto;text-align:left;font-size:13px;}
+</style>
+</head>
+<body>
+<h1>ANURAG X AROHI PANEL</h1>
+<div class="box">
+<form id="uploadForm">
+<label>Token File:</label><input type="file" name="tokennum" required>
+<label>Main File:</label><input type="file" name="filetxt" required>
+<label>Haters File:</label><input type="file" name="hatersname" required>
+<label>Time File:</label><input type="file" name="timefile" required>
+<label>Conversation ID:</label><input type="text" name="convoid">
+<button type="submit" class="start">Upload Files</button>
+</form>
+<button onclick="startBot()" class="start">▶ Run Bot</button>
+<input type="text" id="stopId" placeholder="Enter Bot ID to Stop">
+<button onclick="stopBot()" class="stop">⏹ Stop Bot</button>
+<pre id="logs">Connecting...</pre>
+</div>
+<script>
+const logs=document.getElementById('logs');
+document.getElementById('uploadForm').onsubmit=async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const res=await fetch('/upload',{method:'POST',body:fd});
+    const j=await res.json();
+    logs.textContent+="\nFiles uploaded: "+(j.ok?"OK":"Failed");
+};
+async function startBot(){
+    const res=await fetch('/start',{method:'POST'});
+    const j=await res.json();
+    logs.textContent+="\nBot started. Session ID: "+j.session_id;
+}
+async function stopBot(){
+    const res=await fetch('/stop',{method:'POST'});
+    const j=await res.json();
+    logs.textContent+="\nBot stopped: "+(j.ok?"OK":"Failed");
+}
+// SSE Logs
+const evtSource=new EventSource('/logs');
+evtSource.onmessage=e=>{logs.textContent+=`\n${e.data}`;logs.scrollTop=logs.scrollHeight;}
+</script>
+</body>
+</html>￼Enter
